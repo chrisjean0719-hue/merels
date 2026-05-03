@@ -1,0 +1,16 @@
+{
+  "name": "Sample parlour opening",
+  "opening": ["a7", "g7", "a1", "g1", "d7"],
+  "turn": "light",
+  "toPlace": {
+    "dark": 6,
+    "light": 7
+  },
+  "points": {
+    "a7": "dark",
+    "d7": "dark",
+    "g7": "light",
+    "a1": "dark",
+    "g1": "light"
+  }
+}

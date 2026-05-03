@@ -1,0 +1,8 @@
+{
+  "turn": "dark",
+  "phase": "place",
+  "toPlace": {
+    "dark": 9,
+    "light": 9
+  }
+}
