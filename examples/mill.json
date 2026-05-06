@@ -1,0 +1,17 @@
+{
+  "name": "Sample parlour mill",
+  "opening": ["a7", "b6", "d7", "d6", "g7"],
+  "phase": "remove",
+  "turn": "dark",
+  "toPlace": {
+    "dark": 6,
+    "light": 7
+  },
+  "points": {
+    "a7": "dark",
+    "d7": "dark",
+    "g7": "dark",
+    "b6": "light",
+    "d6": "light"
+  }
+}

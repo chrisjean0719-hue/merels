@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { formatBoard, formatStatus } from '../src/format.js';
 import { createGame, placePiece } from '../src/game.js';
 import { POINTS } from '../src/points.js';
-import { midPlaceGame } from '../src/sample.js';
+import { millGame, midPlaceGame } from '../src/sample.js';
 
 test('an empty game asks dark to place nine', () => {
   assert.equal(formatStatus(createGame()), 'Dark to place (9 left)');
@@ -12,6 +12,10 @@ test('an empty game asks dark to place nine', () => {
 test('the sample opening asks light to place seven', () => {
   assert.equal(formatStatus(midPlaceGame()), 'Light to place (7 left)');
   assert.match(formatBoard(midPlaceGame()), /dark: 3 on the board, 6 in hand/);
+});
+
+test('a mill asks dark to take a piece', () => {
+  assert.equal(formatStatus(millGame()), 'Dark to take a piece');
 });
 
 test('eighteen places report that placement is complete', () => {

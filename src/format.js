@@ -1,11 +1,14 @@
 import { occupiedCount } from './board.js';
 
 export function formatStatus(game) {
+  const who = game.turn === 'dark' ? 'Dark' : 'Light';
   if (game.phase === 'placed') {
     return 'Placement is complete.';
   }
+  if (game.phase === 'remove') {
+    return `${who} to take a piece`;
+  }
   const left = game.toPlace[game.turn];
-  const who = game.turn === 'dark' ? 'Dark' : 'Light';
   return `${who} to place (${left} left)`;
 }
 

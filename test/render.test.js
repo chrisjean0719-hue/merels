@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { pointXY, renderBoard } from '../src/render.js';
 import { createGame } from '../src/game.js';
-import { midPlaceGame } from '../src/sample.js';
+import { millGame, midPlaceGame } from '../src/sample.js';
 import { POINTS } from '../src/points.js';
 import { BOARD_SIZE } from '../src/sizes.js';
 
@@ -24,4 +24,10 @@ test('the sample opening draws three dark pieces and two light pieces', () => {
   const a7 = pointXY('a7');
   assert.equal(a7.x, 48);
   assert.equal(a7.y, 48);
+});
+
+test('a mill labels opponent pieces as takes', () => {
+  const svg = renderBoard(millGame());
+  assert.match(svg, /aria-label="Take Light on b6"/);
+  assert.match(svg, /aria-label="Dark on a7"/);
 });

@@ -1,5 +1,5 @@
 import { formatStatus } from './format.js';
-import { createGame, placePiece } from './game.js';
+import { createGame, playPoint } from './game.js';
 import { GameError } from './error.js';
 import { renderBoard } from './render.js';
 
@@ -18,7 +18,7 @@ boardEl.addEventListener('click', (event) => {
   const hit = event.target.closest('[data-point]');
   if (!hit) return;
   try {
-    game = placePiece(game, hit.getAttribute('data-point'));
+    game = playPoint(game, hit.getAttribute('data-point'));
     paint();
   } catch (err) {
     if (err instanceof GameError) {

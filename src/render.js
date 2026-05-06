@@ -39,7 +39,7 @@ export function renderBoard(game) {
     const { x, y } = pointXY(id);
     const colour = game.points[id];
     const piece = colour ? pieceMarkup(x, y, colour) : '';
-    return `<g data-point="${id}" role="button" tabindex="0" aria-label="${pointLabel(id, colour)}">
+    return `<g data-point="${id}" role="button" tabindex="0" aria-label="${pointLabel(id, colour, game)}">
       <circle class="hit" cx="${x}" cy="${y}" r="${HIT_R}" fill="transparent" />
       <circle cx="${x}" cy="${y}" r="${POINT_R}" fill="${POINT_FILL}" stroke="${LINE_STROKE}" stroke-width="2" />
       ${piece}
@@ -54,7 +54,11 @@ export function renderBoard(game) {
   </svg>`;
 }
 
-function pointLabel(id, colour) {
+function pointLabel(id, colour, game) {
+  if (game.phase === 'remove' && colour && colour !== game.turn) {
+    const who = colour === 'dark' ? 'Dark' : 'Light';
+    return `Take ${who} on ${id}`;
+  }
   if (colour === 'dark') return `Dark on ${id}`;
   if (colour === 'light') return `Light on ${id}`;
   return `Place on ${id}`;
