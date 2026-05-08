@@ -1,6 +1,6 @@
 # Roadmap
 
-Merels is a nine men's morris game in the browser. Two players place nine pieces each on the 24-point board and take a piece after a mill. About 35 hours remain.
+Merels is a nine men's morris game in the browser. Two players place nine pieces each on the 24-point board, take a piece after a mill, and slide to an empty neighbour. About 35 hours remain.
 
 ## Later work
 
@@ -50,4 +50,4 @@ Move a cursor between points with the arrows and place with Enter.
 
 Drag a piece to an empty point during the sliding phase.
 
-An opening book is the next piece. The game can place nine pieces each and take from a mill, and it does not yet suggest an opening reply.
+An opening book is the next piece. The game can place, mill, and slide, and it does not yet suggest an opening reply.

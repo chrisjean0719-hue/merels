@@ -1,4 +1,5 @@
 import { createGame, placePiece } from './game.js';
+import { POINTS } from './points.js';
 
 export const SAMPLE_OPENING = [
   'a7',
@@ -26,6 +27,14 @@ export function millGame() {
   let game = createGame();
   for (const point of SAMPLE_MILL) {
     game = placePiece(game, point);
+  }
+  return game;
+}
+
+export function slideGame() {
+  let game = createGame();
+  for (const id of POINTS.slice(0, 18)) {
+    game = placePiece(game, id);
   }
   return game;
 }

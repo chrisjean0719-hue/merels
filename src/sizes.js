@@ -15,3 +15,4 @@ export const DARK_FILL = '#3d2b1f';
 export const LIGHT_FILL = '#f4efe6';
 export const LIGHT_STROKE = '#3d2b1f';
 export const LABEL_FILL = '#6e5344';
+export const SELECT_STROKE = '#8b1e1e';

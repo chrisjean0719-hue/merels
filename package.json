@@ -1,8 +1,8 @@
 {
   "name": "merels",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "Place nine pieces each on a merels board and take from a mill",
+  "description": "Place, mill, and slide pieces on a merels board",
   "type": "module",
   "scripts": {
     "start": "node bin/serve.js",

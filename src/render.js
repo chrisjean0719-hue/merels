@@ -12,6 +12,7 @@ import {
   PIECE_R,
   POINT_FILL,
   POINT_R,
+  SELECT_STROKE,
   STEP,
 } from './sizes.js';
 
@@ -38,7 +39,7 @@ export function renderBoard(game) {
   const points = POINTS.map((id) => {
     const { x, y } = pointXY(id);
     const colour = game.points[id];
-    const piece = colour ? pieceMarkup(x, y, colour) : '';
+    const piece = colour ? pieceMarkup(x, y, colour, game.selected === id) : '';
     return `<g data-point="${id}" role="button" tabindex="0" aria-label="${pointLabel(id, colour, game)}">
       <circle class="hit" cx="${x}" cy="${y}" r="${HIT_R}" fill="transparent" />
       <circle cx="${x}" cy="${y}" r="${POINT_R}" fill="${POINT_FILL}" stroke="${LINE_STROKE}" stroke-width="2" />
@@ -59,16 +60,23 @@ function pointLabel(id, colour, game) {
     const who = colour === 'dark' ? 'Dark' : 'Light';
     return `Take ${who} on ${id}`;
   }
+  if (game.phase === 'slide') {
+    if (colour === game.turn) return `Slide from ${id}`;
+    if (!colour && game.selected) return `Slide to ${id}`;
+  }
   if (colour === 'dark') return `Dark on ${id}`;
   if (colour === 'light') return `Light on ${id}`;
   return `Place on ${id}`;
 }
 
-function pieceMarkup(x, y, colour) {
+function pieceMarkup(x, y, colour, selected) {
+  const extra = selected ? ` stroke="${SELECT_STROKE}" stroke-width="4" class="piece selected"` : ' class="piece"';
   if (colour === 'dark') {
-    return `<circle class="piece" cx="${x}" cy="${y}" r="${PIECE_R}" fill="${DARK_FILL}" />`;
+    return `<circle cx="${x}" cy="${y}" r="${PIECE_R}" fill="${DARK_FILL}"${extra} />`;
   }
-  return `<circle class="piece" cx="${x}" cy="${y}" r="${PIECE_R}" fill="${LIGHT_FILL}" stroke="${LIGHT_STROKE}" stroke-width="2" />`;
+  const stroke = selected ? SELECT_STROKE : LIGHT_STROKE;
+  const width = selected ? 4 : 2;
+  return `<circle class="piece${selected ? ' selected' : ''}" cx="${x}" cy="${y}" r="${PIECE_R}" fill="${LIGHT_FILL}" stroke="${stroke}" stroke-width="${width}" />`;
 }
 
 function fileLabels() {

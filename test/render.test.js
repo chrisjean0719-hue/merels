@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { pointXY, renderBoard } from '../src/render.js';
 import { createGame } from '../src/game.js';
-import { millGame, midPlaceGame } from '../src/sample.js';
+import { millGame, midPlaceGame, slideGame } from '../src/sample.js';
 import { POINTS } from '../src/points.js';
 import { BOARD_SIZE } from '../src/sizes.js';
 
@@ -30,4 +30,9 @@ test('a mill labels opponent pieces as takes', () => {
   const svg = renderBoard(millGame());
   assert.match(svg, /aria-label="Take Light on b6"/);
   assert.match(svg, /aria-label="Dark on a7"/);
+});
+
+test('a sliding board labels own pieces as slide from', () => {
+  const svg = renderBoard(slideGame());
+  assert.match(svg, /aria-label="Slide from b4"/);
 });

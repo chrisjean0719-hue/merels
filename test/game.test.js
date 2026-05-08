@@ -56,7 +56,7 @@ test('eighteen places complete the placing phase', () => {
   for (const id of POINTS.slice(0, 18)) {
     game = placePiece(game, id);
   }
-  assert.equal(game.phase, 'placed');
+  assert.equal(game.phase, 'slide');
   assert.equal(game.toPlace.dark, 0);
   assert.equal(game.toPlace.light, 0);
   assert.equal(occupiedCount(game.points, 'dark'), 9);

@@ -18,10 +18,10 @@ test('a mill asks dark to take a piece', () => {
   assert.equal(formatStatus(millGame()), 'Dark to take a piece');
 });
 
-test('eighteen places report that placement is complete', () => {
+test('eighteen places ask dark to slide', () => {
   let game = createGame();
   for (const id of POINTS.slice(0, 18)) {
     game = placePiece(game, id);
   }
-  assert.equal(formatStatus(game), 'Placement is complete.');
+  assert.equal(formatStatus(game), 'Dark to slide');
 });
