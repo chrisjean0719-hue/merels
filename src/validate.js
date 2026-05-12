@@ -1,4 +1,4 @@
-import { occupant } from './board.js';
+import { mayFly, occupant } from './board.js';
 import { canTake } from './mill.js';
 import { isPoint, neighbours } from './points.js';
 
@@ -81,7 +81,7 @@ export function validateSlide(game, fromId, toId) {
     errors.push('point: that point is taken');
     return errors;
   }
-  if (!neighbours(fromId).includes(toId)) {
+  if (!mayFly(game.points, game.turn) && !neighbours(fromId).includes(toId)) {
     errors.push('point: that point is not a neighbour');
   }
   return errors;

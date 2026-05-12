@@ -1,4 +1,4 @@
-import { createGame, placePiece } from './game.js';
+import { createGame, fromPosition, placePiece } from './game.js';
 import { POINTS } from './points.js';
 
 export const SAMPLE_OPENING = [
@@ -37,4 +37,22 @@ export function slideGame() {
     game = placePiece(game, id);
   }
   return game;
+}
+
+export function flyGame() {
+  return fromPosition({
+    phase: 'slide',
+    turn: 'dark',
+    toPlace: { dark: 0, light: 0 },
+    points: {
+      a7: 'dark',
+      d7: 'dark',
+      a1: 'dark',
+      g7: 'light',
+      g4: 'light',
+      g1: 'light',
+      b6: 'light',
+      d6: 'light',
+    },
+  });
 }

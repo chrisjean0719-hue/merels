@@ -1,0 +1,20 @@
+{
+  "name": "Sample parlour fly",
+  "phase": "slide",
+  "turn": "dark",
+  "toPlace": {
+    "dark": 0,
+    "light": 0
+  },
+  "points": {
+    "a7": "dark",
+    "d7": "dark",
+    "a1": "dark",
+    "g7": "light",
+    "g4": "light",
+    "g1": "light",
+    "b6": "light",
+    "d6": "light"
+  },
+  "fly": ["a1", "e5"]
+}

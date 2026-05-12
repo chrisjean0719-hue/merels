@@ -1,8 +1,8 @@
 {
   "name": "merels",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
-  "description": "Place, mill, and slide pieces on a merels board",
+  "description": "Place, mill, slide, and fly pieces on a merels board",
   "type": "module",
   "scripts": {
     "start": "node bin/serve.js",

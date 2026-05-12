@@ -1,4 +1,4 @@
-import { occupiedCount } from './board.js';
+import { mayFly, occupiedCount } from './board.js';
 
 export function formatStatus(game) {
   const who = game.turn === 'dark' ? 'Dark' : 'Light';
@@ -6,10 +6,11 @@ export function formatStatus(game) {
     return `${who} to take a piece`;
   }
   if (game.phase === 'slide') {
+    const verb = mayFly(game.points, game.turn) ? 'fly' : 'slide';
     if (game.selected) {
-      return `${who} to slide from ${game.selected}`;
+      return `${who} to ${verb} from ${game.selected}`;
     }
-    return `${who} to slide`;
+    return `${who} to ${verb}`;
   }
   const left = game.toPlace[game.turn];
   return `${who} to place (${left} left)`;

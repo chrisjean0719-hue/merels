@@ -1,4 +1,5 @@
 export const PIECES = 9;
+export const FLY_COUNT = 3;
 export const POINT_COUNT = 24;
 export const STEP = 56;
 export const PAD = 48;

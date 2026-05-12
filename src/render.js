@@ -1,3 +1,4 @@
+import { mayFly } from './board.js';
 import { MILLS, POINTS, fileIndex, rankIndex } from './points.js';
 import {
   BOARD_FILL,
@@ -61,8 +62,9 @@ function pointLabel(id, colour, game) {
     return `Take ${who} on ${id}`;
   }
   if (game.phase === 'slide') {
-    if (colour === game.turn) return `Slide from ${id}`;
-    if (!colour && game.selected) return `Slide to ${id}`;
+    const verb = mayFly(game.points, game.turn) ? 'Fly' : 'Slide';
+    if (colour === game.turn) return `${verb} from ${id}`;
+    if (!colour && game.selected) return `${verb} to ${id}`;
   }
   if (colour === 'dark') return `Dark on ${id}`;
   if (colour === 'light') return `Light on ${id}`;
