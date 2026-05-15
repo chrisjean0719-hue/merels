@@ -1,6 +1,10 @@
 import { mayFly, occupiedCount } from './board.js';
 
 export function formatStatus(game) {
+  if (game.winner) {
+    const who = game.winner === 'dark' ? 'Dark' : 'Light';
+    return `${who} wins.`;
+  }
   const who = game.turn === 'dark' ? 'Dark' : 'Light';
   if (game.phase === 'remove') {
     return `${who} to take a piece`;

@@ -1,0 +1,18 @@
+{
+  "name": "Sample parlour win",
+  "phase": "slide",
+  "turn": "dark",
+  "toPlace": {
+    "dark": 0,
+    "light": 0
+  },
+  "points": {
+    "a7": "dark",
+    "d7": "dark",
+    "a1": "dark",
+    "b6": "light",
+    "d6": "light",
+    "f6": "light"
+  },
+  "win": ["a1", "g7", "b6"]
+}

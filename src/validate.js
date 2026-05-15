@@ -7,6 +7,9 @@ export function validatePlace(game, pointId) {
   if (game === null || typeof game !== 'object' || Array.isArray(game)) {
     return ['game: Game must be an object'];
   }
+  if (game.winner || game.phase === 'over') {
+    errors.push('phase: the game is over');
+  }
   if (game.phase === 'remove') {
     errors.push('phase: take a piece first');
   } else if (game.phase !== 'place') {
@@ -31,6 +34,9 @@ export function validateRemove(game, pointId) {
   if (game === null || typeof game !== 'object' || Array.isArray(game)) {
     return ['game: Game must be an object'];
   }
+  if (game.winner || game.phase === 'over') {
+    errors.push('phase: the game is over');
+  }
   if (game.phase !== 'remove') {
     errors.push('phase: no mill to take from');
   }
@@ -51,6 +57,9 @@ export function validateRemove(game, pointId) {
 
 export function validateSelect(game, pointId) {
   const errors = [];
+  if (game.winner || game.phase === 'over') {
+    errors.push('phase: the game is over');
+  }
   if (game.phase !== 'slide') {
     errors.push('phase: it is not time to slide');
   }
@@ -66,6 +75,9 @@ export function validateSelect(game, pointId) {
 
 export function validateSlide(game, fromId, toId) {
   const errors = [];
+  if (game.winner || game.phase === 'over') {
+    errors.push('phase: the game is over');
+  }
   if (game.phase !== 'slide') {
     errors.push('phase: it is not time to slide');
   }

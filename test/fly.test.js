@@ -35,6 +35,7 @@ test('a fly that makes a mill asks for a take', () => {
       a1: 'dark',
       b6: 'light',
       g1: 'light',
+      f2: 'light',
     },
   });
   const moved = playPoint(playPoint(game, 'a1'), 'g7');

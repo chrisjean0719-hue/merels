@@ -2,7 +2,7 @@ import { formatStatus } from './format.js';
 import { createGame, playPoint } from './game.js';
 import { GameError } from './error.js';
 import { renderBoard } from './render.js';
-import { flyGame, millGame, slideGame } from './sample.js';
+import { flyGame, millGame, slideGame, winGame } from './sample.js';
 
 const boardEl = document.querySelector('#board');
 const statusEl = document.querySelector('#status');
@@ -15,6 +15,7 @@ function startGame() {
   if (fixture === 'fly') return flyGame();
   if (fixture === 'slide') return slideGame();
   if (fixture === 'mill') return millGame();
+  if (fixture === 'win') return winGame();
   return createGame();
 }
 
@@ -39,7 +40,7 @@ boardEl.addEventListener('click', (event) => {
 });
 
 newGameEl.addEventListener('click', () => {
-  game = startGame();
+  game = createGame();
   paint();
 });
 

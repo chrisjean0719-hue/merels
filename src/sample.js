@@ -56,3 +56,37 @@ export function flyGame() {
     },
   });
 }
+
+export function winGame() {
+  return fromPosition({
+    phase: 'slide',
+    turn: 'dark',
+    toPlace: { dark: 0, light: 0 },
+    points: {
+      a7: 'dark',
+      d7: 'dark',
+      a1: 'dark',
+      b6: 'light',
+      d6: 'light',
+      f6: 'light',
+    },
+  });
+}
+
+export function blockedGame() {
+  return fromPosition({
+    phase: 'slide',
+    turn: 'dark',
+    toPlace: { dark: 0, light: 0 },
+    points: {
+      a7: 'dark',
+      g7: 'dark',
+      a1: 'dark',
+      g1: 'dark',
+      d7: 'light',
+      a4: 'light',
+      g4: 'light',
+      d1: 'light',
+    },
+  });
+}

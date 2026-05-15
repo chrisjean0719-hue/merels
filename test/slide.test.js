@@ -44,6 +44,7 @@ test('a slide that makes a mill asks for a take', () => {
       g4: 'dark',
       b6: 'light',
       a1: 'light',
+      c3: 'light',
     },
   });
   const selected = playPoint(game, 'g4');

@@ -1,4 +1,4 @@
-import { emptyPoints, occupant } from './board.js';
+import { beatenColour, emptyPoints, hasLegalMove, occupant } from './board.js';
 import { GameError } from './error.js';
 import { formedMill, hasTake } from './mill.js';
 import { PIECES } from './sizes.js';
@@ -14,18 +14,21 @@ export function createGame() {
     toPlace: { dark: PIECES, light: PIECES },
     points: emptyPoints(),
     selected: null,
+    winner: null,
   };
 }
 
 export function fromPosition(partial) {
   const base = createGame();
-  return {
+  const game = {
     ...base,
     ...partial,
     toPlace: { ...base.toPlace, ...(partial.toPlace ?? {}) },
     points: { ...base.points, ...(partial.points ?? {}) },
     selected: partial.selected ?? null,
+    winner: partial.winner ?? null,
   };
+  return settle(game);
 }
 
 export function other(colour) {
@@ -59,6 +62,9 @@ export function removePiece(game, pointId) {
 }
 
 export function playPoint(game, pointId) {
+  if (game.winner || game.phase === 'over') {
+    throw new GameError(['phase: the game is over']);
+  }
   if (game.phase === 'remove') {
     return removePiece(game, pointId);
   }
@@ -110,12 +116,33 @@ function playSlide(game, pointId) {
 
 function finishTurn(game) {
   const next = cloneGame(game);
-  next.turn = other(game.turn);
   next.selected = null;
+  const beaten = beatenColour(next.points, next.toPlace);
+  if (beaten) {
+    next.winner = other(beaten);
+    next.phase = 'over';
+    return next;
+  }
+  next.turn = other(game.turn);
   if (next.toPlace.dark === 0 && next.toPlace.light === 0) {
     next.phase = 'slide';
   } else {
     next.phase = 'place';
+  }
+  return settle(next);
+}
+
+function settle(game) {
+  const next = cloneGame(game);
+  const beaten = beatenColour(next.points, next.toPlace);
+  if (beaten) {
+    next.winner = other(beaten);
+    next.phase = 'over';
+    return next;
+  }
+  if (next.phase === 'slide' && !hasLegalMove(next.points, next.turn)) {
+    next.winner = other(next.turn);
+    next.phase = 'over';
   }
   return next;
 }
@@ -127,5 +154,6 @@ export function cloneGame(game) {
     toPlace: { dark: game.toPlace.dark, light: game.toPlace.light },
     points: { ...game.points },
     selected: game.selected ?? null,
+    winner: game.winner ?? null,
   };
 }

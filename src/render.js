@@ -57,6 +57,11 @@ export function renderBoard(game) {
 }
 
 function pointLabel(id, colour, game) {
+  if (game.winner || game.phase === 'over') {
+    if (colour === 'dark') return `Dark on ${id}`;
+    if (colour === 'light') return `Light on ${id}`;
+    return `Empty ${id}`;
+  }
   if (game.phase === 'remove' && colour && colour !== game.turn) {
     const who = colour === 'dark' ? 'Dark' : 'Light';
     return `Take ${who} on ${id}`;

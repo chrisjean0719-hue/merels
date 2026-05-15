@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { pointXY, renderBoard } from '../src/render.js';
 import { createGame } from '../src/game.js';
-import { flyGame, millGame, midPlaceGame, slideGame } from '../src/sample.js';
+import { blockedGame, flyGame, millGame, midPlaceGame, slideGame } from '../src/sample.js';
 import { POINTS } from '../src/points.js';
 import { BOARD_SIZE } from '../src/sizes.js';
 
@@ -40,4 +40,10 @@ test('a sliding board labels own pieces as slide from', () => {
 test('a flying board labels own pieces as fly from', () => {
   const svg = renderBoard(flyGame());
   assert.match(svg, /aria-label="Fly from a1"/);
+});
+
+test('a finished board does not offer a slide', () => {
+  const svg = renderBoard(blockedGame());
+  assert.match(svg, /aria-label="Dark on a7"/);
+  assert.equal(svg.includes('Slide from'), false);
 });

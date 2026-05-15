@@ -1,8 +1,8 @@
 {
   "name": "merels",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
-  "description": "Place, mill, slide, and fly pieces on a merels board",
+  "description": "Place, mill, slide, fly, and win a merels game",
   "type": "module",
   "scripts": {
     "start": "node bin/serve.js",
