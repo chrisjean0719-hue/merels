@@ -18,3 +18,5 @@ export const LIGHT_FILL = '#f4efe6';
 export const LIGHT_STROKE = '#3d2b1f';
 export const LABEL_FILL = '#6e5344';
 export const SELECT_STROKE = '#8b1e1e';
+export const HINT_FILL = '#f0c27a';
+export const HINT_STROKE = '#c45c26';

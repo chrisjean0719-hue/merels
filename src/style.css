@@ -50,6 +50,10 @@ h1 {
   cursor: pointer;
 }
 
+#board .hint {
+  cursor: pointer;
+}
+
 #new-game {
   margin-top: 16px;
   padding: 8px 16px;

@@ -14,6 +14,7 @@ test('the empty board draws 24 points', () => {
     assert.match(svg, new RegExp(`aria-label="Place on ${id}"`));
   }
   assert.equal((svg.match(/class="piece"/g) ?? []).length, 0);
+  assert.equal((svg.match(/data-hint="true"/g) ?? []).length, POINTS.length);
 });
 
 test('the sample opening draws three dark pieces and two light pieces', () => {
@@ -30,6 +31,7 @@ test('a mill labels opponent pieces as takes', () => {
   const svg = renderBoard(millGame());
   assert.match(svg, /aria-label="Take Light on b6"/);
   assert.match(svg, /aria-label="Dark on a7"/);
+  assert.match(svg, /data-point="b6" data-hint="true"/);
 });
 
 test('a sliding board labels own pieces as slide from', () => {
@@ -46,4 +48,5 @@ test('a finished board does not offer a slide', () => {
   const svg = renderBoard(blockedGame());
   assert.match(svg, /aria-label="Dark on a7"/);
   assert.equal(svg.includes('Slide from'), false);
+  assert.equal(svg.includes('data-hint="true"'), false);
 });

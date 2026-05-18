@@ -1,9 +1,12 @@
 import { mayFly } from './board.js';
+import { legalPoints } from './hints.js';
 import { MILLS, POINTS, fileIndex, rankIndex } from './points.js';
 import {
   BOARD_FILL,
   BOARD_SIZE,
   DARK_FILL,
+  HINT_FILL,
+  HINT_STROKE,
   HIT_R,
   LABEL_FILL,
   LIGHT_FILL,
@@ -36,14 +39,19 @@ export function renderBoard(game) {
   }).join('');
 
   const labels = fileLabels() + rankLabels();
+  const hints = new Set(legalPoints(game));
 
   const points = POINTS.map((id) => {
     const { x, y } = pointXY(id);
     const colour = game.points[id];
-    const piece = colour ? pieceMarkup(x, y, colour, game.selected === id) : '';
-    return `<g data-point="${id}" role="button" tabindex="0" aria-label="${pointLabel(id, colour, game)}">
+    const hinted = hints.has(id);
+    const piece = colour ? pieceMarkup(x, y, colour, game.selected === id, hinted) : '';
+    const fill = hinted && !colour ? HINT_FILL : POINT_FILL;
+    const stroke = hinted ? HINT_STROKE : LINE_STROKE;
+    const hintAttr = hinted ? ' data-hint="true"' : '';
+    return `<g data-point="${id}"${hintAttr} role="button" tabindex="0" aria-label="${pointLabel(id, colour, game, hints)}">
       <circle class="hit" cx="${x}" cy="${y}" r="${HIT_R}" fill="transparent" />
-      <circle cx="${x}" cy="${y}" r="${POINT_R}" fill="${POINT_FILL}" stroke="${LINE_STROKE}" stroke-width="2" />
+      <circle class="spot${hinted ? ' hint' : ''}" cx="${x}" cy="${y}" r="${POINT_R}" fill="${fill}" stroke="${stroke}" stroke-width="${hinted ? 3 : 2}" />
       ${piece}
     </g>`;
   }).join('');
@@ -56,34 +64,37 @@ export function renderBoard(game) {
   </svg>`;
 }
 
-function pointLabel(id, colour, game) {
+function pointLabel(id, colour, game, hints) {
   if (game.winner || game.phase === 'over') {
     if (colour === 'dark') return `Dark on ${id}`;
     if (colour === 'light') return `Light on ${id}`;
     return `Empty ${id}`;
   }
-  if (game.phase === 'remove' && colour && colour !== game.turn) {
+  if (game.phase === 'remove' && hints.has(id)) {
     const who = colour === 'dark' ? 'Dark' : 'Light';
     return `Take ${who} on ${id}`;
   }
   if (game.phase === 'slide') {
     const verb = mayFly(game.points, game.turn) ? 'Fly' : 'Slide';
-    if (colour === game.turn) return `${verb} from ${id}`;
-    if (!colour && game.selected) return `${verb} to ${id}`;
+    if (colour === game.turn && (hints.has(id) || game.selected === id)) {
+      return `${verb} from ${id}`;
+    }
+    if (!colour && hints.has(id)) return `${verb} to ${id}`;
   }
   if (colour === 'dark') return `Dark on ${id}`;
   if (colour === 'light') return `Light on ${id}`;
   return `Place on ${id}`;
 }
 
-function pieceMarkup(x, y, colour, selected) {
-  const extra = selected ? ` stroke="${SELECT_STROKE}" stroke-width="4" class="piece selected"` : ' class="piece"';
+function pieceMarkup(x, y, colour, selected, hinted) {
+  const stroke = selected ? SELECT_STROKE : hinted ? HINT_STROKE : colour === 'light' ? LIGHT_STROKE : null;
+  const width = selected ? 4 : hinted ? 3 : 2;
+  const klass = `piece${selected ? ' selected' : ''}${hinted ? ' hint' : ''}`;
   if (colour === 'dark') {
-    return `<circle cx="${x}" cy="${y}" r="${PIECE_R}" fill="${DARK_FILL}"${extra} />`;
+    const extra = stroke ? ` stroke="${stroke}" stroke-width="${width}"` : '';
+    return `<circle class="${klass}" cx="${x}" cy="${y}" r="${PIECE_R}" fill="${DARK_FILL}"${extra} />`;
   }
-  const stroke = selected ? SELECT_STROKE : LIGHT_STROKE;
-  const width = selected ? 4 : 2;
-  return `<circle class="piece${selected ? ' selected' : ''}" cx="${x}" cy="${y}" r="${PIECE_R}" fill="${LIGHT_FILL}" stroke="${stroke}" stroke-width="${width}" />`;
+  return `<circle class="${klass}" cx="${x}" cy="${y}" r="${PIECE_R}" fill="${LIGHT_FILL}" stroke="${stroke}" stroke-width="${width}" />`;
 }
 
 function fileLabels() {
