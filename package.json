@@ -1,8 +1,8 @@
 {
   "name": "merels",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
-  "description": "Place, mill, slide, fly, win, and hint a merels game",
+  "description": "Place, mill, slide, fly, win, hint, and undo a merels game",
   "type": "module",
   "scripts": {
     "start": "node bin/serve.js",

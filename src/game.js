@@ -15,6 +15,7 @@ export function createGame() {
     points: emptyPoints(),
     selected: null,
     winner: null,
+    past: [],
   };
 }
 
@@ -27,6 +28,7 @@ export function fromPosition(partial) {
     points: { ...base.points, ...(partial.points ?? {}) },
     selected: partial.selected ?? null,
     winner: partial.winner ?? null,
+    past: partial.past ?? [],
   };
   return settle(game);
 }
@@ -46,9 +48,9 @@ export function placePiece(game, pointId) {
   const foe = other(game.turn);
   if (formedMill(next.points, pointId) && hasTake(next.points, foe)) {
     next.phase = 'remove';
-    return next;
+    return remember(game, next);
   }
-  return finishTurn(next);
+  return remember(game, finishTurn(next));
 }
 
 export function removePiece(game, pointId) {
@@ -58,7 +60,7 @@ export function removePiece(game, pointId) {
   }
   const next = cloneGame(game);
   next.points[pointId] = null;
-  return finishTurn(next);
+  return remember(game, finishTurn(next));
 }
 
 export function playPoint(game, pointId) {
@@ -81,7 +83,7 @@ export function selectPiece(game, pointId) {
   }
   const next = cloneGame(game);
   next.selected = pointId;
-  return next;
+  return remember(game, next);
 }
 
 export function slidePiece(game, fromId, toId) {
@@ -96,9 +98,9 @@ export function slidePiece(game, fromId, toId) {
   const foe = other(game.turn);
   if (formedMill(next.points, toId) && hasTake(next.points, foe)) {
     next.phase = 'remove';
-    return next;
+    return remember(game, next);
   }
-  return finishTurn(next);
+  return remember(game, finishTurn(next));
 }
 
 function playSlide(game, pointId) {
@@ -107,7 +109,7 @@ function playSlide(game, pointId) {
     if (game.selected === pointId) {
       const next = cloneGame(game);
       next.selected = null;
-      return next;
+      return remember(game, next);
     }
     return selectPiece(game, pointId);
   }
@@ -147,6 +149,40 @@ function settle(game) {
   return next;
 }
 
+export function canUndo(game) {
+  return (game.past ?? []).length > 0;
+}
+
+export function undo(game) {
+  const past = game.past ?? [];
+  if (past.length === 0) {
+    throw new GameError(['past: no ply to undo']);
+  }
+  const prev = past[past.length - 1];
+  return {
+    ...cloneGame(prev),
+    past: past.slice(0, -1),
+  };
+}
+
+function snapshot(game) {
+  return {
+    turn: game.turn,
+    phase: game.phase,
+    toPlace: { dark: game.toPlace.dark, light: game.toPlace.light },
+    points: { ...game.points },
+    selected: game.selected ?? null,
+    winner: game.winner ?? null,
+    past: [],
+  };
+}
+
+function remember(previous, next) {
+  const out = cloneGame(next);
+  out.past = [...(previous.past ?? []), snapshot(previous)];
+  return out;
+}
+
 export function cloneGame(game) {
   return {
     turn: game.turn,
@@ -155,5 +191,6 @@ export function cloneGame(game) {
     points: { ...game.points },
     selected: game.selected ?? null,
     winner: game.winner ?? null,
+    past: game.past ?? [],
   };
 }
