@@ -1,6 +1,7 @@
 import { formatStatus } from './format.js';
-import { canUndo, createGame, playPoint, undo } from './game.js';
+import { canUndo, createGame, playPoint } from './game.js';
 import { GameError } from './error.js';
+import { playOpponent, undoHuman } from './opponent.js';
 import { renderBoard } from './render.js';
 import { flyGame, millGame, slideGame, winGame } from './sample.js';
 
@@ -31,6 +32,7 @@ boardEl.addEventListener('click', (event) => {
   if (!hit) return;
   try {
     game = playPoint(game, hit.getAttribute('data-point'));
+    game = playOpponent(game);
     paint();
   } catch (err) {
     if (err instanceof GameError) {
@@ -43,7 +45,7 @@ boardEl.addEventListener('click', (event) => {
 
 undoEl.addEventListener('click', () => {
   try {
-    game = undo(game);
+    game = undoHuman(game);
     paint();
   } catch (err) {
     if (err instanceof GameError) {
