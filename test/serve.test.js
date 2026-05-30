@@ -13,6 +13,8 @@ test('the server returns the board page', async (t) => {
   assert.match(body, /Merels/);
   assert.match(body, /src\/main.js/);
   assert.match(body, /Undo/);
+  assert.match(body, /Replay/);
+  assert.match(body, /Next/);
 });
 
 test('the server rejects a path outside the project', async (t) => {

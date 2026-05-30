@@ -1,6 +1,7 @@
 import { beatenColour, emptyPoints, hasLegalMove, occupant } from './board.js';
 import { GameError } from './error.js';
 import { formedMill, hasTake } from './mill.js';
+import { copyPlies, copyPosition, plyNotation } from './moves.js';
 import { PIECES } from './sizes.js';
 import { validatePlace, validateRemove, validateSelect, validateSlide } from './validate.js';
 
@@ -8,7 +9,7 @@ export const DARK = 'dark';
 export const LIGHT = 'light';
 
 export function createGame() {
-  return {
+  const game = {
     turn: DARK,
     phase: 'place',
     toPlace: { dark: PIECES, light: PIECES },
@@ -16,7 +17,13 @@ export function createGame() {
     selected: null,
     winner: null,
     past: [],
+    plies: [],
+    plyClicks: [],
+    plyKind: null,
+    origin: null,
   };
+  game.origin = originOf(game);
+  return game;
 }
 
 export function fromPosition(partial) {
@@ -29,8 +36,14 @@ export function fromPosition(partial) {
     selected: partial.selected ?? null,
     winner: partial.winner ?? null,
     past: partial.past ?? [],
+    plies: copyPlies(partial.plies ?? []),
+    plyClicks: [...(partial.plyClicks ?? [])],
+    plyKind: partial.plyKind ?? null,
+    origin: partial.origin ? copyPosition(partial.origin) : null,
   };
-  return settle(game);
+  const settled = settle(game);
+  settled.origin = partial.origin ? copyPosition(partial.origin) : originOf(settled);
+  return settled;
 }
 
 export function other(colour) {
@@ -45,12 +58,13 @@ export function placePiece(game, pointId) {
   const next = cloneGame(game);
   next.points[pointId] = game.turn;
   next.toPlace[game.turn] -= 1;
+  const withPly = pushPly(next, 'place', [pointId]);
   const foe = other(game.turn);
-  if (formedMill(next.points, pointId) && hasTake(next.points, foe)) {
-    next.phase = 'remove';
-    return remember(game, next);
+  if (formedMill(withPly.points, pointId) && hasTake(withPly.points, foe)) {
+    withPly.phase = 'remove';
+    return remember(game, stampAfter(withPly));
   }
-  return remember(game, finishTurn(next));
+  return remember(game, finishTurn(withPly));
 }
 
 export function removePiece(game, pointId) {
@@ -60,7 +74,7 @@ export function removePiece(game, pointId) {
   }
   const next = cloneGame(game);
   next.points[pointId] = null;
-  return remember(game, finishTurn(next));
+  return remember(game, finishTurn(amendTake(next, pointId)));
 }
 
 export function playPoint(game, pointId) {
@@ -83,6 +97,8 @@ export function selectPiece(game, pointId) {
   }
   const next = cloneGame(game);
   next.selected = pointId;
+  next.plyKind = 'slide';
+  next.plyClicks = [pointId];
   return remember(game, next);
 }
 
@@ -95,12 +111,13 @@ export function slidePiece(game, fromId, toId) {
   next.points[fromId] = null;
   next.points[toId] = game.turn;
   next.selected = null;
+  const withPly = pushPly(next, 'slide', [fromId, toId]);
   const foe = other(game.turn);
-  if (formedMill(next.points, toId) && hasTake(next.points, foe)) {
-    next.phase = 'remove';
-    return remember(game, next);
+  if (formedMill(withPly.points, toId) && hasTake(withPly.points, foe)) {
+    withPly.phase = 'remove';
+    return remember(game, stampAfter(withPly));
   }
-  return remember(game, finishTurn(next));
+  return remember(game, finishTurn(withPly));
 }
 
 function playSlide(game, pointId) {
@@ -109,6 +126,8 @@ function playSlide(game, pointId) {
     if (game.selected === pointId) {
       const next = cloneGame(game);
       next.selected = null;
+      next.plyKind = null;
+      next.plyClicks = [];
       return remember(game, next);
     }
     return selectPiece(game, pointId);
@@ -119,11 +138,13 @@ function playSlide(game, pointId) {
 function finishTurn(game) {
   const next = cloneGame(game);
   next.selected = null;
+  next.plyKind = null;
+  next.plyClicks = [];
   const beaten = beatenColour(next.points, next.toPlace);
   if (beaten) {
     next.winner = other(beaten);
     next.phase = 'over';
-    return next;
+    return stampAfter(next);
   }
   next.turn = other(game.turn);
   if (next.toPlace.dark === 0 && next.toPlace.light === 0) {
@@ -131,7 +152,7 @@ function finishTurn(game) {
   } else {
     next.phase = 'place';
   }
-  return settle(next);
+  return stampAfter(settle(next));
 }
 
 function settle(game) {
@@ -161,6 +182,7 @@ export function undo(game) {
   const prev = past[past.length - 1];
   return {
     ...cloneGame(prev),
+    origin: copyPosition(game.origin),
     past: past.slice(0, -1),
   };
 }
@@ -174,7 +196,65 @@ function snapshot(game) {
     selected: game.selected ?? null,
     winner: game.winner ?? null,
     past: [],
+    plies: copyPlies(game.plies),
+    plyClicks: [...(game.plyClicks ?? [])],
+    plyKind: game.plyKind ?? null,
   };
+}
+
+function originOf(game) {
+  return copyPosition({
+    turn: game.turn,
+    phase: game.phase,
+    toPlace: game.toPlace,
+    points: game.points,
+    selected: game.selected ?? null,
+    winner: game.winner ?? null,
+  });
+}
+
+function pushPly(game, kind, clicks) {
+  const next = cloneGame(game);
+  next.plyKind = kind;
+  next.plyClicks = [...clicks];
+  next.plies = [
+    ...(game.plies ?? []),
+    {
+      colour: game.turn,
+      kind,
+      clicks: [...clicks],
+      notation: plyNotation(kind, clicks),
+      after: null,
+    },
+  ];
+  return next;
+}
+
+function amendTake(game, pointId) {
+  const plies = game.plies ?? [];
+  const last = plies[plies.length - 1];
+  if (!last) return game;
+  const clicks = [...last.clicks, pointId];
+  const next = cloneGame(game);
+  next.plyClicks = clicks;
+  next.plies = [
+    ...plies.slice(0, -1),
+    {
+      ...last,
+      clicks,
+      notation: plyNotation(last.kind, clicks),
+    },
+  ];
+  return next;
+}
+
+function stampAfter(game) {
+  const plies = game.plies ?? [];
+  if (plies.length === 0) return game;
+  const next = cloneGame(game);
+  const last = next.plies[next.plies.length - 1];
+  next.plies = [...next.plies.slice(0, -1), { ...last, after: originOf(next) }];
+  return next;
 }
 
 function remember(previous, next) {
@@ -192,5 +272,9 @@ export function cloneGame(game) {
     selected: game.selected ?? null,
     winner: game.winner ?? null,
     past: game.past ?? [],
+    plies: copyPlies(game.plies),
+    plyClicks: [...(game.plyClicks ?? [])],
+    plyKind: game.plyKind ?? null,
+    origin: copyPosition(game.origin),
   };
 }
