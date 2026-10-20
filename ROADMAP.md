@@ -1,12 +1,12 @@
 # Roadmap
 
-Merels is a nine men's morris game in the browser. Two players place nine pieces each on the 24-point board, take a piece after a mill, slide to an empty neighbour, fly with three pieces, win when the other colour cannot play, mark legal points, undo a ply, play a rules-based Light, list each ply, and replay from the start. About 35 hours remain.
+Merels is a nine men's morris game in the browser. Two players place nine pieces each on the 24-point board, take a piece after a mill, slide to an empty neighbour, fly with three pieces, win when the other colour cannot play, mark legal points, undo a ply, play a rules-based Light, list each ply, and replay from the start. About 32 hours remain.
 
 ## Later work
 
-These stay as later work. They are about 35 hours.
+These stay as later work. They are about 32 hours.
 
-### Opening book (4 hours)
+### Opening book (3 hours)
 
 Suggest a first-place reply from a small set of known openings.
 
@@ -30,7 +30,7 @@ Write a position to a local file and restore it.
 
 Play until one colour wins two games, and keep that tally.
 
-### Print diagram (3 hours)
+### Print diagram (2 hours)
 
 Lay the board and the move list out for one printed page.
 
@@ -38,7 +38,7 @@ Lay the board and the move list out for one printed page.
 
 A smaller inner-and-middle board with six pieces each.
 
-### Twelve men's morris (4 hours)
+### Twelve men's morris (3 hours)
 
 Add the two diagonal lines and twelve pieces each.
 

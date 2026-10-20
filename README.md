@@ -27,7 +27,7 @@ test/           unit tests
 
 ## Next
 
-About 35 hours of later work stay in [ROADMAP.md](ROADMAP.md).
+About 32 hours of later work stay in [ROADMAP.md](ROADMAP.md).
 
 ## License
 
